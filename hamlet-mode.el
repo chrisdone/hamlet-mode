@@ -78,7 +78,9 @@ displays the closed line as a message."
   ;; If the line is only whitespace, move to the end of it so the user can see
   ;; where the indentation is.
   (when (string-match-p "^\\s-*$" (s-trim-right (thing-at-point 'line)))
-    (end-of-line)))
+    (end-of-line))
+  (when (bolp)
+    (back-to-indentation)))
 
 (defun hamlet//previous-nonblank-line ()
   "Get the previous line from point; the return value is a cons
