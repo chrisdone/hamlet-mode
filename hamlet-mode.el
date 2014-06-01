@@ -70,15 +70,15 @@ displays the closed line as a message."
                       (looking-at "^$")))
         (forward-line -1))
       ;; If we found the start of the block we just ended, show it.
-      (if (eq (current-indentation) new-indentation)
-          (let ((line (s-trim (thing-at-point 'line))))
-            (if (or (s-prefix? "$" line) (s-prefix? "<" line))
-                (message "Closing %s" line))))))
+      (when (eq (current-indentation) new-indentation)
+        (let ((line (s-trim (thing-at-point 'line))))
+          (when (or (s-prefix? "$" line) (s-prefix? "<" line))
+            (message "Closing %s" line))))))
 
   ;; If the line is only whitespace, move to the end of it so the user can see
   ;; where the indentation is.
-  (if (string-match-p "^\\s-*$" (s-trim-right (thing-at-point 'line)))
-      (end-of-line)))
+  (when (string-match-p "^\\s-*$" (s-trim-right (thing-at-point 'line)))
+    (end-of-line)))
 
 (defun hamlet//previous-nonblank-line ()
   "Get the previous line from point; the return value is a cons
@@ -86,13 +86,13 @@ cell whose car is the line and whose cdr is its indentation, or
 nil if there is no nonblank line."
   (save-excursion
     (beginning-of-line)
-    ; There's no previous nonblank line before the first line.
-    (if (eq (point) 1) nil
+                                        ; There's no previous nonblank line before the first line.
+    (unless (eq (point) 1)
       (beginning-of-line 0)
       (while (and (> (point) 1)
                   (looking-at "^[ \t]*$"))
         (forward-line -1))
-      (if (looking-at "^[ \t]*$") nil
+      (unless (looking-at "^[ \t]*$")
         (cons (thing-at-point 'line) (current-indentation))))))
 
 (defun hamlet/calculate-next-indentation ()
@@ -106,7 +106,8 @@ you want."
   (let* ((indentation (current-indentation))
          (next-indentation (cl-find-if (lambda (x) (< x indentation))
                                        (hamlet//valid-indentations))))
-    (if (numberp next-indentation) next-indentation
+    (if (numberp next-indentation)
+        next-indentation
       (-if-let (prev-line (hamlet//previous-nonblank-line))
           (+ (cdr prev-line) hamlet/basic-offset)
         0))))
