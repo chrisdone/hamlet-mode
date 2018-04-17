@@ -49,6 +49,7 @@
   "The basic indentation level for `hamlet/indent-line'."
   :type 'integer
   :group 'hamlet)
+(put 'hamlet/basic-offset 'safe-local-variable 'integerp)
 
 (defcustom hamlet-mode-hook nil
   "Hook run by hamlet-mode."
