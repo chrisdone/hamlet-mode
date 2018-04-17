@@ -170,7 +170,8 @@ no previous nonblank line, the only valid indentation is 0."
   (set (make-local-variable 'font-lock-defaults)
        '(hamlet/font-lock-keywords))
   (set (make-local-variable 'indent-line-function)
-       'hamlet/indent-line))
+       'hamlet/indent-line)
+  (electric-indent-local-mode -1))
 
 
 ;; Associate ourselves with hamlet files.
